@@ -5,8 +5,7 @@ print("push 0")
 if len(n)%4:
     c=(len(n)%4)
     n="a"*(4-c)+n
-    print(f'push "{n[:4]}"')
-    print(f'sub  dword ptr [esp+{c}], "{"a"*(4-c)}"')
+    print(f'push "{n[2:4]}"')
 else:
     print(f'push "{n[:4]}"')
 
