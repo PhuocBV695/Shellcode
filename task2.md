@@ -54,7 +54,7 @@ Cứ thế ta lấy được Base address của kernelbase.dll:
 	mov eax, [eax -8h + 18h]; kernelbase.DllBase
 ```
 tại sao phía cuối lại là `mov eax, [eax -8h + 18h]`? Đơn giản là vì `[eax+10h]` chứa data còn nếu chỉ là `[eax]` như trên thì chỉ chứa con trỏ trỏ đến node tiếp theo  
-Về việc mình lấy kernelbase.dll thay vì kernel32.dll như mọi người thì do khi debug mình đã phát hiện ra một điều không phổ biến:  
+Về việc mình lấy kernelbase.dll thay vì kernel32.dll như mọi người thì do khi debug mình đã phát hiện ra một điều khá lạ và hay:  
 ![image](https://github.com/user-attachments/assets/408804fa-be79-430d-8391-d3053ec4de92)  
 Như trong hình trên ta thấy rõ, hàm `LoadLibraryA` nó không thực sự nằm trong kernel32.dll mà là nằm trong kernelbase.dll  
 mình có tìm hiểu thì nhận được thông tin đại khái như sau:  
@@ -62,6 +62,11 @@ mình có tìm hiểu thì nhận được thông tin đại khái như sau:
   
 khi tìm các hàm khác thì có 1 số hàm chứa bên trong cả 2 thư viện:  
 ![image](https://github.com/user-attachments/assets/c36ee549-3451-4544-9dc7-20ea910398f3)  
-Tuy nhiên sử dụng kernel32 hay kernelbase đều chạy được và không có sự khác biệt nên không quá quan trọng  
   
-Thông tin thêm về sự khác biệt giữa 2 thư viện này khá hiếm, mình sẽ tìm hiểu kỹ hơn và bổ sung sau  
+Mình đoán rằng kernel32 đã cũ, trong khi thời gian luôn xuất hiện thêm các dll mới, các functions mới, nếu không cập nhật các hàm `GetProcAddress`, `LoadLibraryA` thì sẽ không thể đáp ứng chức năng  
+có [bài thảo luận](https://www.unknowncheats.me/forum/general-programming-and-reversing/220491-differences-kernel32-dll-kernelbase-dll.html) trên mạng nói về vấn đề này:  
+  
+![image](https://github.com/user-attachments/assets/4d9b466f-1317-4b01-883e-b333a5ba4ef7)  
+  
+Tuy nhiên sử dụng kernel32 hay kernelbase đều chạy được và không có sự khác biệt nên không quá quan trọng  
+Thông tin thêm về sự khác biệt giữa 2 thư viện này khá hiếm, mình sẽ tìm hiểu kỹ hơn và bổ sung sau.  
