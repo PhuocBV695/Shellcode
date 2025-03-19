@@ -42,7 +42,7 @@ offset 0x14 trong PEB_LDR_DATA trỏ đến `InMemoryOrderModuleList` chứa th�
 `InMemoryOrderModuleList` là một danh sách liên kết đôi, tức như ta đã biết, danh sách liên kết chứa data và con trỏ  
 trong trường hợp này là:  
 `InMemoryOrderLoadList->currentProgram->ntdll->kernel32->kernelbase.BaseDll`  
-về cơ bản là mỗi node chứa data là base address và 1 con trỏ trỏ đến node trước đó và 1 con trỏ trỏ đến node tiếp theo  
+về cơ bản là mỗi node chứa 3 thành phần là data: base address, 1 con trỏ trỏ đến node trước đó và 1 con trỏ trỏ đến node tiếp theo  
 Cứ thế ta lấy được Base address của kernelbase.dll:  
 ```assembly
 	mov eax, [fs:30h]		    ; Pointer to PEB 
