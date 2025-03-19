@@ -94,8 +94,7 @@ start:
 	mov [ebp-0ch], eax ;address LoadLibraryA
 	
 	push 0
-	push "aall"
-	sub  word ptr [esp+2], "aa"
+	push "ll"
 	push "d.23"
 	push "resu"
 	push esp
