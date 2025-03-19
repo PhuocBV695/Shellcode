@@ -86,10 +86,10 @@ start:
 
 	mov [ebp-8h], eax; luu dia chi GetProcAddress
 	push 0
-    push 'Ayra'
+    	push 'Ayra'
 	push 'rbiL'
 	push 'daoL'
-    push esp
+    	push esp
 	push [ebp-4h] ; kernelbase.DllBase
 	call dword ptr [ebp-8h] ; call GetProcAddress, luu dia chi cua LoadLibrary vao eax
 	mov [ebp-0ch], eax ;address LoadLibraryA
