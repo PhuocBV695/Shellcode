@@ -51,9 +51,9 @@ Cứ thế ta lấy được Base address của kernelbase.dll:
 	mov eax, [eax]				  ; this program's module
 	mov eax, [eax]				  ; ntdll module
 	mov eax, [eax]				 ; kernel32
-	mov eax, [eax -8h + 18h]; kernelbase.DllBase
+	mov eax, [eax + 10h]; kernelbase.DllBase
 ```
-tại sao phía cuối lại là `mov eax, [eax -8h + 18h]`? Đơn giản là vì `[eax+10h]` chứa data còn nếu chỉ là `[eax]` như trên thì chỉ chứa con trỏ trỏ đến node tiếp theo  
+dòng cuối phải là `mov eax, [eax + 10h]` vì `[eax+10h]` chứa data còn nếu chỉ là `[eax]` như trên thì chỉ chứa con trỏ trỏ đến node tiếp theo  
 Về việc mình lấy kernelbase.dll thay vì kernel32.dll như mọi người thì do khi debug mình đã phát hiện ra một điều khá lạ và hay:  
 ![image](https://github.com/user-attachments/assets/408804fa-be79-430d-8391-d3053ec4de92)  
 Như trong hình trên ta thấy rõ, hàm `LoadLibraryA` nó không thực sự nằm trong kernel32.dll mà là nằm trong kernelbase.dll  
@@ -70,3 +70,25 @@ có [bài thảo luận](https://www.unknowncheats.me/forum/general-programming-
   
 Tuy nhiên sử dụng kernel32 hay kernelbase đều chạy được và không có sự khác biệt nên không quá quan trọng  
 Thông tin thêm về sự khác biệt giữa 2 thư viện này khá hiếm, mình sẽ tìm hiểu kỹ hơn và bổ sung sau.  
+
+# MessageBox  
+Vì push bằng tay khá mất thời gian nên mình đã viết 1 file python để gen code asm  
+```python
+n=input("Nhap ky tu can push: ")
+print(n)
+n=n[::-1]
+print("push 0")
+if len(n)%4:
+    c=(len(n)%4)
+    n="a"*(4-c)+n
+    print(f'push "{n[:4]}"')
+    print(f'sub  dword ptr [esp+{c}], "{"a"*(4-c)}"')
+else:
+    print(f'push "{n[:4]}"')
+
+for i in range(4,len(n),4):
+    print(f'push "{n[i:i+4]}"')
+print("push esp")
+```
+  
+![image](https://github.com/user-attachments/assets/9fbfcc74-8087-479f-89de-9a7debc97370)  
