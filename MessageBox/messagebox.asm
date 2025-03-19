@@ -19,11 +19,10 @@ start:
 	mov eax, [eax -8h + 18h]; kernelbase.DllBase
 	mov [ebp-4h], eax; luu dllbase cua kernelbase vao stack
 	push 0
-	push "aass"
-	sub  word ptr [esp+2], "aa"
+	push "ss"
 	push "erdd"
 	push "Acor"
-	push "PteG"			    
+	push "PteG"		    
 	mov [ebp - 28h], esp			
 	mov ebx, eax ;luu dia chi kernelbase.dll vao ebx
 
@@ -104,8 +103,7 @@ start:
 	mov [ebp-10h], eax; address user32.dll
 	
 	push 0
-	push "aAxo"
-	sub  byte ptr [esp+3], "a"
+	push "Axo"
 	push "Bega"
 	push "sseM"
 	push esp
@@ -114,8 +112,7 @@ start:
 	mov [ebp-14h], eax; dia chi cua MessageBoxA
 
 	push 0
-	push "aa!t"
-	sub  word ptr [esp+2], "aa"
+	push "!t"
 	push "ahc "
 	push "cuc "
 	push "xobe"
@@ -139,8 +136,7 @@ start:
 	call dword ptr [ebp-14h]
 
 	push 0
-	push "asse"
-	sub  word ptr [esp+3], "a"
+	push "sse"
 	push "corP"
 	push "tixE"
 	push esp
