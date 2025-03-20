@@ -131,3 +131,18 @@ tuy đều là cấp phát bộ nhớ nhưng cũng có nhiều thuộc tính kh�
 ![image](https://github.com/user-attachments/assets/4400df36-fc72-4dfa-b67e-46a0dd6ff286)  
   
 sau đấy có thể gọi hàm như bình thường và giải phóng bộ nhớ bằng VirtualFree.  
+  
+Việc gọi shellcode trên Linux có vẻ dễ dàng hơn nhiều so với Windows:  
+```c
+#include 
+#include 
+
+/* shellcode goes here : */
+char code[] = "\x31\xc0\x50\x68\x2f\x63\x61\x74\x68\x2f\x62\x69\x6e\x89\xe3\x50\x68\x2e\x74\x78\x74\x68\x66\x6c\x61\x67\x89\xe1\x50\x51\x53\x89\xe1\x31\xc0\x83\xc0\x0b\xcd\x80";
+
+int main()
+{
+    (*(void(*)()) code)();
+    return 0;
+}
+```
