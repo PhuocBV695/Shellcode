@@ -72,8 +72,41 @@ Tuy nhiên sử dụng kernel32 hay kernelbase đều chạy được và không
 Thông tin thêm về sự khác biệt giữa 2 thư viện này khá hiếm, mình sẽ tìm hiểu kỹ hơn và bổ sung sau.  
 
 # Tìm địa chỉ hàm GetProcAddress  
+Mình có debug để thử tìm địa chỉ hàm và nhận thấy dù mở chương trình khác nhau, process đã khởi động lại nhiều lần nhưng base address của kernel base và địa chỉ các hàm trong đó không hề thay đổi:  
+![image](https://github.com/user-attachments/assets/53ac0227-debe-462b-89aa-7227ba80d305)  
 
+![image](https://github.com/user-attachments/assets/2b858262-e791-4b73-b6e8-c443201d0f3b)  
+  
+nên mình đã nảy ra ý tưởng thử lấy address hàm trừ đi address kernelbase để lấy offset để thay vào chương trình:  
+![image](https://github.com/user-attachments/assets/560cd743-80ea-4a78-b395-1180f4aec46b)  
+  
+Và nó thật sự hoạt động:  
+  
+![image](https://github.com/user-attachments/assets/baa8444c-4259-4731-a812-c7fd20ae09cb)  
+  
+thậm chí mình lấy bytecode ra và gọi shellcode thì nó vẫn hoạt động khá tốt :))  
+  
+![image](https://github.com/user-attachments/assets/a1ef9497-ffcc-4e0c-b9f7-e9a1ca2248c1)  
+  
+Nghĩ rằng không cần thiết phải duyệt tìm tất cả các hàm để tìm địa chỉ thì khi nộp task mới thấy vấn đề:  
+  
+![image](https://github.com/user-attachments/assets/81934bb1-9b17-4b63-b2e1-52b4629ab67a)  
+  
+Đoạn code trên vẫn hoạt động tốt cho đến khi mình khởi động lại máy thì lại không sử dụng được:  
+mình có tìm hiểu thì khả năng kernel32/kerneldll nó hoạt động thế này:  
+  
+![image](https://github.com/user-attachments/assets/7d9c6ae1-f330-4f4e-bf67-1b26292efa44)  
 
+![image](https://github.com/user-attachments/assets/d23e620d-e6eb-4012-adfb-fb228bef3041)  
+tức là kernel32/kernelbase bắt đầu chạy khi ta khởi động hệ điều hành và vẫn luôn hoạt động không tắt  
+Nên dù ta chạy file exe bình thường lại bao nhiêu lần thì chỉ là ánh xạ dll lại tiến trình mới nên địa chỉ của kernel32/kernelbase.dll vẫn giữ nguyên không hề thay đổi cho đến khi ta khởi động lại hệ điều hành  
+Khi khởi động lại Windows thì địa chỉ của các dll sẽ bị random lại  
+![image](https://github.com/user-attachments/assets/d1035ffc-2dbf-44ea-83d8-dd7fc58c8e3b)  
+
+Vậy để có thể resolve được hàm từ dll thì vẫn phải duyệt tìm địa chỉ GetProcAddress như mọi người thường làm, tuy nhiên mình vẫn chưa nắm rõ PE file nên chưa tự code được phần này, sẽ nghiên cứu thêm :((  
+Đây là kiến thức khá hay, có thể tham khảo thêm tại: 
+https://vi.wikipedia.org/wiki/Dynamic_Link_Library  
+https://en.wikipedia.org/wiki/Address_space_layout_randomization#Microsoft_Windows  
 # MessageBox  
 Vì push bằng tay khá mất thời gian nên mình đã viết 1 file python để gen code asm  
 ```python
@@ -89,5 +122,12 @@ for i in range(4,len(n),4):
     print(f'push "{n[i:i+4]}"')
 print("push esp")
 ```
+# Shellcode  
+một chương trình gọi shellcode trên Windows thường có dạng như sau:  
+![image](https://github.com/user-attachments/assets/5b5666cc-626f-44e2-9b96-37d71266ef28)  
+Đầu tiên ta cần cấp phát một vùng bộ nhớ có thể read/write/execute để nạp phần opcode vào bộ nhớ  
+tuy đều là cấp phát bộ nhớ nhưng cũng có nhiều thuộc tính khác với các hàm cấp phát động thông thường như malloc(),..:  
   
-
+![image](https://github.com/user-attachments/assets/4400df36-fc72-4dfa-b67e-46a0dd6ff286)  
+  
+sau đấy có thể gọi hàm như bình thường và giải phóng bộ nhớ bằng VirtualFree.  
