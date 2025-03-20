@@ -42,7 +42,7 @@ offset 0x14 trong PEB_LDR_DATA trỏ đến `InMemoryOrderModuleList` chứa th�
 `InMemoryOrderModuleList` là một danh sách liên kết đôi, tức như ta đã biết, danh sách liên kết chứa data và con trỏ  
 trong trường hợp này là:  
 `InMemoryOrderLoadList->currentProgram->ntdll->kernel32->kernelbase.BaseDll`  
-về cơ bản là mỗi node chứa 3 thành phần là data: base address, 1 con trỏ trỏ đến node trước đó và 1 con trỏ trỏ đến node tiếp theo  
+về cơ bản là mỗi node chứa 3 thành phần chính là data: base address, 1 con trỏ trỏ đến node trước đó và 1 con trỏ trỏ đến node tiếp theo  
 Cứ thế ta lấy được Base address của kernelbase.dll:  
 ```assembly
 	mov eax, [fs:30h]		    ; Pointer to PEB 
@@ -71,6 +71,9 @@ có [bài thảo luận](https://www.unknowncheats.me/forum/general-programming-
 Tuy nhiên sử dụng kernel32 hay kernelbase đều chạy được và không có sự khác biệt nên không quá quan trọng  
 Thông tin thêm về sự khác biệt giữa 2 thư viện này khá hiếm, mình sẽ tìm hiểu kỹ hơn và bổ sung sau.  
 
+# Tìm địa chỉ hàm GetProcAddress  
+
+
 # MessageBox  
 Vì push bằng tay khá mất thời gian nên mình đã viết 1 file python để gen code asm  
 ```python
@@ -87,4 +90,4 @@ for i in range(4,len(n),4):
 print("push esp")
 ```
   
-![image](https://github.com/user-attachments/assets/9fbfcc74-8087-479f-89de-9a7debc97370)  
+
